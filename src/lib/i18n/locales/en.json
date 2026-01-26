@@ -1,0 +1,273 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "currency": "₹",
+    "per": "per",
+    "kg": "kg",
+    "piece": "piece",
+    "liter": "liter",
+    "dozen": "dozen"
+  },
+  "navigation": {
+    "home": "Home",
+    "market": "Market",
+    "vendor": "List Product",
+    "deals": "My Deals",
+    "language": "Language"
+  },
+  "home": {
+    "title": "LocalTrade Bridge",
+    "subtitle": "The Multilingual Mandi",
+    "description": "AI-powered marketplace connecting local vendors and buyers with fair price discovery and intelligent negotiation.",
+    "features": {
+      "title": "Why Choose LocalTrade Bridge?",
+      "pricing": {
+        "title": "Smart Pricing",
+        "description": "AI-driven price analysis ensures fair deals for everyone"
+      },
+      "negotiation": {
+        "title": "Intelligent Negotiation",
+        "description": "Automated negotiation system saves time and ensures fairness"
+      },
+      "multilingual": {
+        "title": "Multilingual Support",
+        "description": "Trade in your preferred language across India"
+      }
+    },
+    "cta": {
+      "buyer": "Browse Products",
+      "vendor": "List Your Products"
+    }
+  },
+  "vendor": {
+    "title": "List Your Product",
+    "subtitle": "Reach more customers with AI-powered pricing",
+    "form": {
+      "productName": {
+        "label": "Product Name",
+        "placeholder": "Enter product name (e.g., Fresh Tomatoes)",
+        "error": "Product name is required"
+      },
+      "category": {
+        "label": "Category",
+        "placeholder": "Select category",
+        "error": "Please select a category"
+      },
+      "city": {
+        "label": "City",
+        "placeholder": "Select your city",
+        "error": "Please select your city"
+      },
+      "quantity": {
+        "label": "Available Quantity",
+        "placeholder": "Enter quantity",
+        "error": "Quantity must be greater than 0"
+      },
+      "unit": {
+        "label": "Unit",
+        "placeholder": "Select unit"
+      },
+      "listingPrice": {
+        "label": "Listing Price",
+        "placeholder": "Starting price for negotiation",
+        "error": "Listing price must be greater than 0",
+        "help": "This is your starting price for negotiations"
+      },
+      "floorPrice": {
+        "label": "Minimum Price",
+        "placeholder": "Your minimum acceptable price",
+        "error": "Minimum price must be greater than 0",
+        "help": "This is kept private - your absolute minimum",
+        "validation": "Minimum price cannot be higher than listing price"
+      },
+      "description": {
+        "label": "Description (Optional)",
+        "placeholder": "Describe your product quality, origin, etc."
+      },
+      "submit": "List Product",
+      "submitting": "Listing Product..."
+    },
+    "success": {
+      "title": "Product Listed Successfully!",
+      "message": "Your product is now available in the marketplace",
+      "actions": {
+        "viewMarket": "View in Market",
+        "listAnother": "List Another Product"
+      }
+    }
+  },
+  "market": {
+    "title": "Local Market",
+    "subtitle": "Discover fresh products from local vendors",
+    "search": {
+      "placeholder": "Search products...",
+      "noResults": "No products found matching your search"
+    },
+    "filters": {
+      "city": {
+        "label": "City",
+        "all": "All Cities"
+      },
+      "category": {
+        "label": "Category",
+        "all": "All Categories"
+      },
+      "clear": "Clear Filters"
+    },
+    "product": {
+      "from": "from",
+      "available": "available",
+      "startingAt": "Starting at",
+      "negotiate": "Negotiate Price"
+    },
+    "empty": {
+      "title": "No Products Available",
+      "message": "Be the first to list a product in this marketplace!",
+      "action": "List Your Product"
+    }
+  },
+  "chat": {
+    "title": "Price Negotiation",
+    "product": {
+      "details": "Product Details",
+      "vendor": "Vendor",
+      "location": "Location",
+      "quantity": "Quantity",
+      "startingPrice": "Starting Price"
+    },
+    "priceAnalysis": {
+      "title": "AI Price Analysis",
+      "fairRange": "Fair Price Range",
+      "recommended": "Recommended Price",
+      "confidence": "Confidence",
+      "factors": {
+        "title": "Price Factors",
+        "location": "Location adjustment",
+        "season": "Seasonal variation",
+        "bulk": "Bulk discount",
+        "quality": "Quality grade"
+      }
+    },
+    "messages": {
+      "welcome": "Hello! I'm here to help you negotiate a fair price for this product. Based on market analysis, here's what I found:",
+      "priceAnalysis": "Fair price range: {min} - {max} per {unit}. I recommend {recommended} per {unit} with {confidence}% confidence.",
+      "makeOffer": "What price would you like to offer?",
+      "offerTooLow": "That offer is quite low compared to market rates. The vendor's costs need to be covered. How about {counterOffer} per {unit}?",
+      "offerReasonable": "That's a reasonable offer! I can counter with {counterOffer} per {unit}. This ensures fair value for both parties.",
+      "offerAccepted": "Excellent! I accept your offer of {finalPrice} per {unit}. Let's complete this deal!",
+      "offerRejected": "I can't accept that price as it's below the vendor's minimum. My best offer is {counterOffer} per {unit}.",
+      "negotiationComplete": "Congratulations! We've reached an agreement at {finalPrice} per {unit}."
+    },
+    "input": {
+      "placeholder": "Enter your offer price...",
+      "send": "Send Offer",
+      "perUnit": "per {unit}"
+    },
+    "deal": {
+      "complete": "Complete Deal",
+      "completing": "Completing Deal..."
+    }
+  },
+  "deal": {
+    "title": "Deal Completed!",
+    "subtitle": "Congratulations on your successful negotiation",
+    "summary": {
+      "title": "Transaction Summary",
+      "product": "Product",
+      "vendor": "Vendor",
+      "quantity": "Quantity",
+      "originalPrice": "Original Price",
+      "finalPrice": "Final Price",
+      "savings": "You Saved",
+      "savingsPercent": "{percent}% savings",
+      "reference": "Reference Number",
+      "date": "Date & Time"
+    },
+    "actions": {
+      "browseMore": "Browse More Products",
+      "listProducts": "List Your Products",
+      "shareSuccess": "Share This Deal"
+    },
+    "receipt": {
+      "print": "Print Receipt",
+      "download": "Download Receipt"
+    }
+  },
+  "categories": {
+    "vegetables": "Vegetables",
+    "fruits": "Fruits",
+    "grains": "Grains & Cereals",
+    "spices": "Spices",
+    "dairy": "Dairy Products",
+    "pulses": "Pulses & Lentils",
+    "oils": "Oils & Ghee",
+    "snacks": "Snacks",
+    "beverages": "Beverages",
+    "other": "Other"
+  },
+  "cities": {
+    "mumbai": "Mumbai",
+    "delhi": "Delhi",
+    "bangalore": "Bangalore",
+    "hyderabad": "Hyderabad",
+    "chennai": "Chennai",
+    "kolkata": "Kolkata",
+    "pune": "Pune",
+    "ahmedabad": "Ahmedabad",
+    "jaipur": "Jaipur",
+    "surat": "Surat",
+    "lucknow": "Lucknow",
+    "kanpur": "Kanpur",
+    "nagpur": "Nagpur",
+    "indore": "Indore",
+    "thane": "Thane",
+    "bhopal": "Bhopal",
+    "visakhapatnam": "Visakhapatnam",
+    "pimpri": "Pimpri-Chinchwad",
+    "patna": "Patna",
+    "vadodara": "Vadodara",
+    "ghaziabad": "Ghaziabad",
+    "ludhiana": "Ludhiana",
+    "agra": "Agra",
+    "nashik": "Nashik",
+    "faridabad": "Faridabad",
+    "meerut": "Meerut",
+    "rajkot": "Rajkot",
+    "kalyan": "Kalyan-Dombivali",
+    "vasai": "Vasai-Virar",
+    "varanasi": "Varanasi"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "validation": "Please check your input and try again.",
+    "storage": "Unable to save data. Please try again.",
+    "notFound": "The requested item was not found.",
+    "unauthorized": "You don't have permission to perform this action."
+  },
+  "validation": {
+    "required": "This field is required",
+    "minLength": "Must be at least {min} characters",
+    "maxLength": "Must be no more than {max} characters",
+    "min": "Must be at least {min}",
+    "max": "Must be no more than {max}",
+    "email": "Please enter a valid email address",
+    "phone": "Please enter a valid phone number",
+    "positive": "Must be a positive number",
+    "integer": "Must be a whole number"
+  }
+}

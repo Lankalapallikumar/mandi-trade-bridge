@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Deal Creation</title>
+</head>
+<body>
+    <h1>Create Test Deal</h1>
+    <button onclick="createTestDeal()">Create Test Deal</button>
+    <div id="result"></div>
+
+    <script>
+        function createTestDeal() {
+            const testDeal = {
+                id: 'test-deal-' + Date.now(),
+                productId: 'test-product-123',
+                productName: 'Fresh Tomatoes',
+                originalPrice: 50,
+                agreedPrice: 42,
+                savings: 8,
+                savingsPercentage: 16,
+                buyerName: 'Test Buyer',
+                vendorName: 'Ramesh Farms',
+                location: 'Mumbai',
+                quantity: 10,
+                unit: 'kg',
+                referenceNumber: 'LTB' + Date.now().toString().slice(-8).toUpperCase(),
+                completedAt: new Date().toISOString()
+            };
+
+            // Save to localStorage
+            const deals = JSON.parse(localStorage.getItem('localtrade_deals') || '[]');
+            deals.push(testDeal);
+            localStorage.setItem('localtrade_deals', JSON.stringify(deals));
+
+            document.getElementById('result').innerHTML = `
+                <p>Test deal created with ID: ${testDeal.id}</p>
+                <p>Reference: ${testDeal.referenceNumber}</p>
+                <a href="http://localhost:3000/deal?dealId=${testDeal.id}" target="_blank">
+                    View Deal Page
+                </a>
+            `;
+        }
+    </script>
+</body>
+</html>

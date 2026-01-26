@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Deal Creation - LocalTrade Bridge</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9fafb;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #16a34a;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .button {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+        }
+        .deal-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .deal-link:hover {
+            background: #2563eb;
+        }
+        .info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 LocalTrade Bridge - Deal Page Test</h1>
+        
+        <div class="info">
+            <strong>📋 Instructions:</strong>
+            <ol>
+                <li>Click "Create Test Deal" to generate sample deal data</li>
+                <li>Click the generated link to view the deal page</li>
+                <li>Verify all deal information displays correctly</li>
+                <li>Test the navigation buttons and print functionality</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center;">
+            <button class="button" onclick="createTestDeal()">🎯 Create Test Deal</button>
+            <button class="button" onclick="createMultipleDeals()">📊 Create Multiple Test Deals</button>
+            <button class="button" onclick="clearAllData()">🗑️ Clear All Data</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function createTestDeal() {
+            const dealId = 'deal-' + Date.now();
+            const testDeal = {
+                id: dealId,
+                productId: 'product-' + Date.now(),
+                productName: 'Fresh Tomatoes',
+                originalPrice: 50,
+                agreedPrice: 42,
+                savings: 8,
+                savingsPercentage: 16,
+                buyerName: 'Test Buyer',
+                vendorName: 'Ramesh Farms',
+                location: 'Mumbai',
+                quantity: 10,
+                unit: 'kg',
+                referenceNumber: 'LTB' + Date.now().toString().slice(-6).toUpperCase(),
+                completedAt: new Date().toISOString()
+            };
+
+            // Save to localStorage
+            const deals = JSON.parse(localStorage.getItem('localtrade_deals') || '[]');
+            deals.push(testDeal);
+            localStorage.setItem('localtrade_deals', JSON.stringify(deals));
+
+            displayResult(testDeal, 'single');
+        }
+
+        function createMultipleDeals() {
+            const products = [
+                { name: 'Fresh Tomatoes', price: 50, agreed: 42, vendor: 'Ramesh Farms', location: 'Mumbai', qty: 10, unit: 'kg' },
+                { name: 'Basmati Rice', price: 120, agreed: 105, vendor: 'Singh Rice Mills', location: 'Delhi', qty: 25, unit: 'kg' },
+                { name: 'Alphonso Mangoes', price: 200, agreed: 175, vendor: 'Ratnagiri Fruits', location: 'Mumbai', qty: 5, unit: 'kg' },
+                { name: 'Fresh Onions', price: 30, agreed: 28, vendor: 'Maharashtra Agro', location: 'Pune', qty: 50, unit: 'kg' }
+            ];
+
+            const deals = JSON.parse(localStorage.getItem('localtrade_deals') || '[]');
+            const newDeals = [];
+
+            products.forEach((product, index) => {
+                const dealId = 'deal-' + Date.now() + '-' + index;
+                const deal = {
+                    id: dealId,
+                    productId: 'product-' + Date.now() + '-' + index,
+                    productName: product.name,
+                    originalPrice: product.price,
+                    agreedPrice: product.agreed,
+                    savings: product.price - product.agreed,
+                    savingsPercentage: ((product.price - product.agreed) / product.price) * 100,
+                    buyerName: 'Test Buyer',
+                    vendorName: product.vendor,
+                    location: product.location,
+                    quantity: product.qty,
+                    unit: product.unit,
+                    referenceNumber: 'LTB' + (Date.now() + index).toString().slice(-6).toUpperCase(),
+                    completedAt: new Date(Date.now() - (index * 60000)).toISOString() // Stagger times
+                };
+                deals.push(deal);
+                newDeals.push(deal);
+            });
+
+            localStorage.setItem('localtrade_deals', JSON.stringify(deals));
+            displayResult(newDeals, 'multiple');
+        }
+
+        function clearAllData() {
+            localStorage.removeItem('localtrade_deals');
+            localStorage.removeItem('localtrade_listings');
+            localStorage.removeItem('localtrade_negotiations');
+            
+            document.getElementById('result').innerHTML = `
+                <div class="result">
+                    <h3>🗑️ All Data Cleared</h3>
+                    <p>All test data has been removed from localStorage.</p>
+                </div>
+            `;
+        }
+
+        function displayResult(deals, type) {
+            const resultDiv = document.getElementById('result');
+            
+            if (type === 'single') {
+                const deal = deals;
+                resultDiv.innerHTML = `
+                    <div class="result">
+                        <h3>✅ Test Deal Created Successfully!</h3>
+                        <p><strong>Product:</strong> ${deal.productName}</p>
+                        <p><strong>Original Price:</strong> ₹${deal.originalPrice}</p>
+                        <p><strong>Agreed Price:</strong> ₹${deal.agreedPrice}</p>
+                        <p><strong>Savings:</strong> ₹${deal.savings} (${deal.savingsPercentage.toFixed(1)}%)</p>
+                        <p><strong>Reference:</strong> ${deal.referenceNumber}</p>
+                        <p><strong>Deal ID:</strong> ${deal.id}</p>
+                        
+                        <a href="/deal?dealId=${deal.id}" class="deal-link" target="_blank">
+                            🎉 View Deal Page
+                        </a>
+                    </div>
+                `;
+            } else {
+                const dealLinks = deals.map(deal => 
+                    `<li><a href="/deal?dealId=${deal.id}" target="_blank">${deal.productName} - Saved ₹${deal.savings}</a></li>`
+                ).join('');
+                
+                resultDiv.innerHTML = `
+                    <div class="result">
+                        <h3>✅ ${deals.length} Test Deals Created Successfully!</h3>
+                        <p>Multiple deals have been created with different products and savings:</p>
+                        <ul>${dealLinks}</ul>
+                        <p><em>Click any link above to test the deal page with different data.</em></p>
+                    </div>
+                `;
+            }
+        }
+
+        // Display current data on page load
+        window.onload = function() {
+            const deals = JSON.parse(localStorage.getItem('localtrade_deals') || '[]');
+            if (deals.length > 0) {
+                document.getElementById('result').innerHTML = `
+                    <div class="result">
+                        <h3>📊 Existing Deals Found</h3>
+                        <p>Found ${deals.length} existing deal(s) in localStorage.</p>
+                        <p><em>You can create new test deals or clear existing data using the buttons above.</em></p>
+                    </div>
+                `;
+            }
+        };
+    </script>
+</body>
+</html>
