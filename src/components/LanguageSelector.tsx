@@ -45,18 +45,18 @@ export default function LanguageSelector() {
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative min-w-[120px]" ref={dropdownRef}>
       {/* Language selector button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-neutral-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-white border border-neutral-300 hover:bg-neutral-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 shadow-sm"
         aria-label="Select language"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
         <span className="text-lg" aria-hidden="true">🌐</span>
-        <span className="font-medium text-sm">
-          {currentLanguage?.code.toUpperCase() || 'EN'}
+        <span className="font-medium text-sm text-neutral-700">
+          {currentLanguage?.nativeName || 'English'}
         </span>
         <svg 
           className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
@@ -71,7 +71,7 @@ export default function LanguageSelector() {
 
       {/* Dropdown menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-neutral-200 py-2 z-50">
+        <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-neutral-200 py-2 z-50">
           {supportedLanguages.map((lang) => (
             <button
               key={lang.code}
@@ -81,13 +81,13 @@ export default function LanguageSelector() {
               }`}
               role="menuitem"
             >
-              <span className="text-lg" aria-hidden="true">{lang.flag}</span>
+              <span className="text-xl" aria-hidden="true">{lang.flag}</span>
               <div className="flex-1">
-                <div className="font-medium">{lang.nativeName}</div>
+                <div className="font-medium text-base">{lang.nativeName}</div>
                 <div className="text-sm text-neutral-500">{lang.name}</div>
               </div>
               {language === lang.code && (
-                <svg className="w-4 h-4 text-primary-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <svg className="w-5 h-5 text-primary-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               )}

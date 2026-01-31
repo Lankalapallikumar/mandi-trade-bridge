@@ -19,13 +19,14 @@ export class NegotiationEngine {
     // Constructor no longer needs pricingEngine parameter
   }
 
-  // Process buyer offer and generate AI response - now static
+  // Process buyer offer and generate AI response - now static with translation support
   static processOffer(
     offer: number,
     floorPrice: number,
     priceBand: PriceBand,
     currentRound: number = 1,
-    productName: string = 'product'
+    productName: string = 'product',
+    t?: (key: string, variables?: Record<string, string | number>) => string
   ): NegotiationResult {
     try {
       // Validate offer
@@ -38,21 +39,21 @@ export class NegotiationEngine {
 
       // Check if offer meets floor price
       if (offer >= floorPrice) {
-        return NegotiationEngine.acceptOffer(offer, floorPrice);
+        return NegotiationEngine.acceptOffer(offer, floorPrice, t);
       }
 
       // Check if offer is unreasonably low
       if (offer < floorPrice * 0.5) {
-        return NegotiationEngine.rejectUnreasonableOffer(offer, floorPrice, productName);
+        return NegotiationEngine.rejectUnreasonableOffer(offer, floorPrice, productName, t);
       }
 
       // Check if we've reached maximum rounds
       if (currentRound >= 5) {
-        return NegotiationEngine.finalRejection(floorPrice, productName);
+        return NegotiationEngine.finalRejection(floorPrice, productName, t);
       }
 
       // Generate counter-offer
-      return NegotiationEngine.generateCounterOffer(offer, floorPrice, productName, currentRound);
+      return NegotiationEngine.generateCounterOffer(offer, floorPrice, productName, currentRound, t);
 
     } catch (error) {
       console.error('Error processing offer:', error);
@@ -63,9 +64,18 @@ export class NegotiationEngine {
     }
   }
 
-  // Accept the offer - now static
-  private static acceptOffer(offer: number, floorPrice: number): NegotiationResult {
-    const message = `Excellent! I accept your offer of ₹${offer.toLocaleString('en-IN')}. Let's finalize this deal. The vendor will be happy with this price.`;
+  // Accept the offer - now static with translation support
+  private static acceptOffer(
+    offer: number, 
+    floorPrice: number,
+    t?: (key: string, variables?: Record<string, string | number>) => string
+  ): NegotiationResult {
+    const message = t 
+      ? t('chat.messages.offerAccepted', { 
+          finalPrice: `₹${offer.toLocaleString('en-IN')}`,
+          unit: 'kg'
+        })
+      : `Excellent! I accept your offer of ₹${offer.toLocaleString('en-IN')}. Let's finalize this deal. The vendor will be happy with this price.`;
 
     return {
       accepted: true,
@@ -74,31 +84,55 @@ export class NegotiationEngine {
     };
   }
 
-  // Reject unreasonably low offers - now static
-  private static rejectUnreasonableOffer(offer: number, floorPrice: number, productName: string): NegotiationResult {
+  // Reject unreasonably low offers - now static with translation support
+  private static rejectUnreasonableOffer(
+    offer: number, 
+    floorPrice: number, 
+    productName: string,
+    t?: (key: string, variables?: Record<string, string | number>) => string
+  ): NegotiationResult {
     const minReasonable = Math.round(floorPrice * 0.8);
+    
+    const message = t
+      ? t('chat.messages.offerTooLow', {
+          counterOffer: `₹${minReasonable.toLocaleString('en-IN')}`,
+          unit: 'kg'
+        })
+      : `I appreciate your interest, but ₹${offer.toLocaleString('en-IN')} is quite below the market value for quality ${productName}. The vendor has costs to consider too. Could you consider something closer to ₹${minReasonable.toLocaleString('en-IN')}?`;
     
     return {
       accepted: false,
-      message: `I appreciate your interest, but ₹${offer.toLocaleString('en-IN')} is quite below the market value for quality ${productName}. The vendor has costs to consider too. Could you consider something closer to ₹${minReasonable.toLocaleString('en-IN')}?`
+      message
     };
   }
 
-  // Final rejection when max rounds reached - now static
-  private static finalRejection(floorPrice: number, productName: string): NegotiationResult {
+  // Final rejection when max rounds reached - now static with translation support
+  private static finalRejection(
+    floorPrice: number, 
+    productName: string,
+    t?: (key: string, variables?: Record<string, string | number>) => string
+  ): NegotiationResult {
+    const message = t
+      ? t('chat.messages.offerRejected', {
+          counterOffer: `₹${floorPrice.toLocaleString('en-IN')}`,
+          unit: 'kg'
+        })
+      : `I've tried my best to find a middle ground, but I can't go below ₹${floorPrice.toLocaleString('en-IN')} for this quality ${productName}. The vendor needs to cover their costs. Perhaps you'd like to browse other similar products?`;
+    
     return {
       accepted: false,
       shouldEnd: true,
-      message: `I've tried my best to find a middle ground, but I can't go below ₹${floorPrice.toLocaleString('en-IN')} for this quality ${productName}. The vendor needs to cover their costs. Perhaps you'd like to browse other similar products?`
+      message
     };
   }
 
-  // Generate counter-offer with progressive strategy - now static
+  // Generate counter-offer with progressive strategy - now static with translation support
   private static generateCounterOffer(
     offer: number,
     floorPrice: number,
     productName: string,
-    round: number
+    round: number,
+    t?: (key: string, variables?: Record<string, string | number>) => string
   ): NegotiationResult {
     // Calculate counter-offer using progressive strategy
     const gap = floorPrice - offer;
@@ -111,7 +145,7 @@ export class NegotiationEngine {
     );
 
     // Generate contextual message
-    const message = NegotiationEngine.generateNegotiationMessage(offer, counterOffer, productName, round);
+    const message = NegotiationEngine.generateNegotiationMessage(offer, counterOffer, productName, round, t);
 
     return {
       accepted: false,
@@ -173,29 +207,59 @@ export class NegotiationEngine {
     return typeof offer === 'number' && offer > 0 && isFinite(offer);
   }
 
-  // Generate opening message for negotiation - now static
-  static createInitialMessage(productName: string, priceBand: PriceBand, listingPrice: number): ChatMessage {
-    const messages = [
-      `Hello! I'm here to help you negotiate a fair price for this ${productName}. The vendor is asking ₹${listingPrice.toLocaleString('en-IN')}, and based on current market rates, I think there's room for negotiation. What would you like to offer?`,
-      `Welcome to the negotiation! This ${productName} looks great. The listed price is ₹${listingPrice.toLocaleString('en-IN')}, but I'm here to help you get the best deal possible. What's your opening offer?`,
-      `Hi there! Ready to negotiate for this quality ${productName}? The vendor wants ₹${listingPrice.toLocaleString('en-IN')}, but with my market knowledge, I believe we can work out something better for you. What price did you have in mind?`
-    ];
+  // Generate opening message for negotiation - now static with translation support
+  static createInitialMessage(
+    productName: string, 
+    priceBand: PriceBand, 
+    listingPrice: number,
+    t?: (key: string, variables?: Record<string, string | number>) => string
+  ): ChatMessage {
+    // Use translation if available, otherwise fallback to English
+    const welcomeMessage = t 
+      ? t('chat.messages.welcome')
+      : "Hello! I'm here to help you negotiate a fair price for this product. Based on market analysis, here's what I found:";
+    
+    const priceAnalysisMessage = t
+      ? t('chat.messages.priceAnalysis', {
+          min: `₹${priceBand.min.toLocaleString('en-IN')}`,
+          max: `₹${priceBand.max.toLocaleString('en-IN')}`,
+          recommended: `₹${priceBand.recommended.toLocaleString('en-IN')}`,
+          confidence: priceBand.confidence.toString(),
+          unit: 'kg' // Default unit, should be passed as parameter
+        })
+      : `Fair price range: ₹${priceBand.min.toLocaleString('en-IN')} - ₹${priceBand.max.toLocaleString('en-IN')} per kg. I recommend ₹${priceBand.recommended.toLocaleString('en-IN')} per kg with ${priceBand.confidence}% confidence.`;
+
+    const makeOfferMessage = t
+      ? t('chat.messages.makeOffer')
+      : "What price would you like to offer?";
+
+    const fullMessage = `${welcomeMessage}\n\n${priceAnalysisMessage}\n\n${makeOfferMessage}`;
 
     return {
       id: generateId(),
       sender: 'ai',
-      message: messages[Math.floor(Math.random() * messages.length)],
+      message: fullMessage,
       timestamp: new Date().toISOString(),
       type: 'message'
     };
   }
 
-  // Generate deal completion message - now static
-  static createDealCompletionMessage(agreedPrice: number): ChatMessage {
+  // Generate deal completion message - now static with translation support
+  static createDealCompletionMessage(
+    agreedPrice: number,
+    t?: (key: string, variables?: Record<string, string | number>) => string
+  ): ChatMessage {
+    const message = t
+      ? t('chat.messages.negotiationComplete', {
+          finalPrice: `₹${agreedPrice.toLocaleString('en-IN')}`,
+          unit: 'kg'
+        })
+      : `🎉 Congratulations! The deal has been finalized at ₹${agreedPrice.toLocaleString('en-IN')}. You'll receive a confirmation with all the details. Thank you for using our negotiation service!`;
+
     return {
       id: generateId(),
       sender: 'ai',
-      message: `🎉 Congratulations! The deal has been finalized at ₹${agreedPrice.toLocaleString('en-IN')}. You'll receive a confirmation with all the details. Thank you for using our negotiation service!`,
+      message,
       timestamp: new Date().toISOString(),
       type: 'message'
     };

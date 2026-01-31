@@ -60,7 +60,8 @@ export default function ChatPage() {
           const initialMessage = NegotiationEngine.createInitialMessage(
             productListing.name,
             band,
-            productListing.listingPrice
+            productListing.listingPrice,
+            t
           );
 
           session = {
@@ -127,7 +128,8 @@ export default function ChatPage() {
         listing.floorPrice,
         priceBand,
         negotiationRound,
-        listing.name
+        listing.name,
+        t
       );
 
       // Add AI response
@@ -177,7 +179,7 @@ export default function ChatPage() {
         LocalStorageManager.addDeal(deal);
         
         // Add completion message
-        const completionMessage = NegotiationEngine.createDealCompletionMessage(offerAmount);
+        const completionMessage = NegotiationEngine.createDealCompletionMessage(offerAmount, t);
         const completionMessages = [...finalMessages, completionMessage];
         
         const completedNegotiation = {
