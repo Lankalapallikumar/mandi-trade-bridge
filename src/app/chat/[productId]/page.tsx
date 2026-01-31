@@ -7,6 +7,7 @@ import { LocalStorageManager, generateId, formatCurrency, formatCityName, format
 import { PricingEngine } from '../../../lib/engines/pricingEngine';
 import { NegotiationEngine } from '../../../lib/engines/negotiationEngine';
 import { useI18n } from '../../../lib/i18n/context';
+import LanguageSelector from '../../../components/LanguageSelector';
 
 export default function ChatPage() {
   const { t } = useI18n();
@@ -95,6 +96,69 @@ export default function ChatPage() {
   useEffect(() => {
     scrollToBottom();
   }, [negotiation?.messages]);
+
+  // Update AI messages when language changes
+  useEffect(() => {
+    if (!negotiation || !listing || !priceBand) return;
+
+    const updateMessagesForLanguage = () => {
+      const updatedMessages = negotiation.messages.map((message) => {
+        // Only update AI messages, keep user messages as-is
+        if (message.sender !== 'ai') return message;
+
+        // Update different types of AI messages
+        if (message.type === 'message' || message.type === 'welcome') {
+          // This is an initial welcome message - regenerate it
+          const welcomeMessage = t('chat.messages.welcome');
+          const priceAnalysisMessage = t('chat.messages.priceAnalysis', {
+            min: `₹${priceBand.min.toLocaleString('en-IN')}`,
+            max: `₹${priceBand.max.toLocaleString('en-IN')}`,
+            recommended: `₹${priceBand.recommended.toLocaleString('en-IN')}`,
+            confidence: priceBand.confidence.toString(),
+            unit: 'kg'
+          });
+          const makeOfferMessage = t('chat.messages.makeOffer');
+          
+          return {
+            ...message,
+            message: `${welcomeMessage}\n\n${priceAnalysisMessage}\n\n${makeOfferMessage}`
+          };
+        } else if (message.type === 'counter-offer' && message.offer) {
+          // This is a counter-offer message
+          return {
+            ...message,
+            message: t('chat.messages.offerReasonable', {
+              counterOffer: `₹${message.offer.toLocaleString('en-IN')}`,
+              unit: 'kg'
+            })
+          };
+        } else if (message.type === 'acceptance') {
+          // This is an acceptance message
+          return {
+            ...message,
+            message: t('chat.messages.offerAccepted', {
+              finalPrice: `₹${message.offer?.toLocaleString('en-IN') || '0'}`,
+              unit: 'kg'
+            })
+          };
+        }
+
+        return message;
+      });
+
+      // Update the negotiation with translated messages
+      const updatedNegotiation = {
+        ...negotiation,
+        messages: updatedMessages
+      };
+
+      setNegotiation(updatedNegotiation);
+      // Also save to localStorage
+      LocalStorageManager.updateNegotiation(updatedNegotiation);
+    };
+
+    updateMessagesForLanguage();
+  }, [t, negotiation?.id, listing, priceBand]); // Re-run when language (t function) changes
 
   const handleSendOffer = async () => {
     if (!currentOffer.trim() || !listing || !negotiation || !priceBand) return;
@@ -252,7 +316,7 @@ export default function ChatPage() {
       <div className="max-w-4xl mx-auto">
         {/* Product Header */}
         <div className="bg-white border-b border-gray-200 p-6">
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 {listing.name}
@@ -277,6 +341,17 @@ export default function ChatPage() {
                 {formatCurrency(listing.listingPrice)}
               </div>
               <div className="text-sm text-gray-500">Listed price</div>
+            </div>
+          </div>
+          
+          {/* Chat Language Selector */}
+          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+            <div className="text-sm text-gray-600">
+              💬 {t('chat.title')} - <span className="font-medium text-blue-600">Switch language anytime during negotiation</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <span className="text-sm text-gray-600 font-medium">Chat Language:</span>
+              <LanguageSelector />
             </div>
           </div>
         </div>

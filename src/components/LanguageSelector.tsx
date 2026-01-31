@@ -49,7 +49,7 @@ export default function LanguageSelector() {
       {/* Language selector button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-4 py-2 rounded-lg bg-white border border-neutral-300 hover:bg-neutral-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 shadow-sm"
+        className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white border border-neutral-300 hover:bg-neutral-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 shadow-sm"
         aria-label="Select language"
         aria-expanded={isOpen}
         aria-haspopup="true"
